@@ -9,7 +9,7 @@ async function addComment(asanaPAT, taskId, taskComment) {
             logAsanaChangeWarnings: false
         }).useAccessToken(asanaPAT);
 
-        await client.tasks.addComment(taskId, {
+        await asanaClient.tasks.addComment(taskId, {
             text: taskComment
         });
         core.info("Added the pull request link to the Asana task.");
@@ -29,13 +29,16 @@ try {
     );
     const parseAsanaURL = formattedLink.exec(pullRequests.body);
 
+    console.log(taskComment);
+    console.log(parseAsanaURL);
+
     if (parseAsanaURL !== null && taskComment) {
         const taskId = parseAsanaURL.groups.task;
         if (taskId) {
             addComment(asanaPat, taskId, taskComment);
         }
     } else {
-        core.info(`Invalid Asana task URL ${triggerPharse}`);
+        core.info(`Invalid Asana task URL ${formattedLink}`);
     }
 } catch (error) {
     core.setFailed(error.message);
