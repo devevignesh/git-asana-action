@@ -1,13 +1,18 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: "A job to update asana"
+description: "Attach PR link to the asana task"
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+    asana-pat:
+        description: "Asana public access token"
+        required: true
+    task-comment:
+        description: "Add a comment with the PR link to the asana task."
+        required: false
+    targets:
+        description: "JSON array of objects having project and section where to move current task. Move task only if it exists in target project."
+        required: false
+    trigger-phrase:
+        description: "Prefix before the task i.e ASANA TASK: https://app.asana.com/1/2/3"
+        required: true
 runs:
-  using: 'node12'
-  main: 'index.js'
+    using: "node12"
+    main: "index.js"
