@@ -27,7 +27,7 @@ try {
         `${triggerPharse} *\\[(.*?)\\]\\(https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+).*?\\)`,
         "g"
     );
-    const parseAsanaURL = formattedLink.exec(PULL_REQUEST.body);
+    const parseAsanaURL = formattedLink.exec(pullRequests.body);
 
     if (parseAsanaURL !== null && taskComment) {
         const taskId = parseAsanaURL.groups.task;
