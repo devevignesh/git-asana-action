@@ -29,10 +29,15 @@ try {
     );
     const parseAsanaURL = formattedLink.exec(pullRequests.body);
 
+    let comment = "";
+    if (taskComment) {
+        comment = `${taskComment} ${pullRequests.html_url}`;
+    }
+
     console.log(taskComment);
     console.log(parseAsanaURL);
 
-    if (parseAsanaURL !== null && taskComment) {
+    if (parseAsanaURL !== null) {
         const taskId = parseAsanaURL.groups.task;
         if (taskId) {
             addComment(asanaPat, taskId, taskComment);
