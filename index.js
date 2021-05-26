@@ -23,19 +23,16 @@ try {
     const taskComment = core.getInput("task-comment");
     const triggerPharse = core.getInput("trigger-phrase");
     const pullRequests = github.context.payload.pull_request;
-    const formattedLink = new RegExp(
-        `${triggerPharse} *\\[(.*?)\\]\\(https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+).*?\\)`,
-        "g"
-    );
-    const parseAsanaURL = formattedLink.exec(pullRequests.body);
+    const regexString = `${triggerPharse}(?:\s*)https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`;
+    const formattedString = new RegExp(regexString, "g");
+    const parseAsanaURL = formattedString.exec(pullRequests.body);
 
     let comment = "";
     if (taskComment) {
         comment = `${taskComment} ${pullRequests.html_url}`;
     }
 
-    console.log(taskComment);
-    console.log(parseAsanaURL);
+    console.info("body", pullRequests.body, "regex", formattedString, "parse", parseAsanaURL);
 
     if (parseAsanaURL !== null) {
         const taskId = parseAsanaURL.groups.task;
@@ -43,7 +40,7 @@ try {
             addComment(asanaPat, taskId, taskComment);
         }
     } else {
-        core.info(`Invalid Asana task URL ${formattedLink}`);
+        core.info(`Invalid Asana task URL ${formattedString}`);
     }
 } catch (error) {
     core.setFailed(error.message);
