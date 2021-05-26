@@ -22,9 +22,11 @@ try {
     const asanaPat = core.getInput("asana-pat");
     const taskComment = core.getInput("task-comment");
     const triggerPharse = core.getInput("trigger-phrase");
+    const formattedString = new RegExp(
+        `${triggerPharse} *\\[(.*?)\\]\\(https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+).*?\\)`,
+        "g"
+    );
     const pullRequests = github.context.payload.pull_request;
-    const regexString = `${triggerPharse}(?:\s*)https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`;
-    const formattedString = new RegExp(regexString, "g");
     const parseAsanaURL = formattedString.exec(pullRequests.body);
 
     let comment = "";
@@ -37,7 +39,7 @@ try {
     if (parseAsanaURL !== null) {
         const taskId = parseAsanaURL.groups.task;
         if (taskId) {
-            addComment(asanaPat, taskId, taskComment);
+            addComment(asanaPat, taskId, comment);
         }
     } else {
         core.info(`Invalid Asana task URL ${formattedString}`);
